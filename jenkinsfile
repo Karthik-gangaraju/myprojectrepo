@@ -1,48 +1,28 @@
 pipeline {
     agent any
 
-    environment {
-        MAVEN_HOME = tool 'maven'
+    tools {
+        maven 'Maven 3'
+        jdk 'JDK 17'
     }
 
     stages {
-        stage('Clone Repository') {
+        stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/Karthik-gangaraju/myprojectrepo.git'
+                git 'https://github.com/your-username/your-repo.git'
             }
         }
-
+        
         stage('Build') {
             steps {
-                sh '${MAVEN_HOME}/bin/mvn clean install'
+                sh 'mvn clean package'
             }
         }
 
         stage('Test') {
             steps {
-                sh '${MAVEN_HOME}/bin/mvn test'
+                sh 'mvn test'
             }
-        }
-
-        stage('Package') {
-            steps {
-                sh '${MAVEN_HOME}/bin/mvn package'
-            }
-        }
-
-        stage('Deploy') {
-            steps {
-                sh 'cp target/*.war /opt/tomcat/webapps/'
-            }
-        }
-    }
-
-    post {
-        success {
-            echo 'Build and Deployment Successful!'
-        }
-        failure {
-            echo 'Build Failed!'
         }
     }
 }
